@@ -12,7 +12,7 @@ snmptranslate -Tp -IR agentxIOT
 
 ### Generate snmp sub agent with makefile
 ```
-mib2c -c mib2c.scalar.conf agentxTutorial
-mib2c -c mfd-makefile.m2m agentxTutorial
-mib2c -c subagent.m2c agentxTutorial
+mib2c -c mib2c.scalar.conf agentxIOT
+mib2c -c mfd-makefile.m2m agentxIOT
+mib2c -c subagent.m2c agentxIOT
 ```
