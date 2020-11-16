@@ -1,0 +1,110 @@
+IOT-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    OBJECT-GROUP
+        FROM SNMPv2-CONF
+    DisplayString
+        FROM SNMPv2-TC
+    experimental, OBJECT-TYPE, Integer32, MODULE-IDENTITY
+        FROM SNMPv2-SMI
+;
+
+--
+-- top level structure
+--
+agentxIOT MODULE-IDENTITY
+    LAST-UPDATED "202001050000Z"
+    ORGANIZATION "theunixtips"
+    CONTACT-INFO "xkrajc17@stud.fit.vutbr.cz"
+    DESCRIPTION  "MIB for IoT devices included to home assistant"
+    REVISION     "202001050000Z"
+    DESCRIPTION  "Initializing"
+    ::= { experimental 9999 }
+
+Scalars           OBJECT IDENTIFIER ::= { agentxIOT  1 }
+Tables            OBJECT IDENTIFIER ::= { agentxIOT  2 }
+ConformenceGroups OBJECT IDENTIFIER ::= { agentxIOT 99 }
+
+---
+--- Some Scalars
+---
+ROString OBJECT-TYPE
+    SYNTAX      DisplayString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "String object type only for read"
+    ::= { Scalars 1 }
+
+ROInteger OBJECT-TYPE
+    SYNTAX      Integer32 (0..2147483647)
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Integer object type only for read"
+    ::= { Scalars 2 }
+
+
+
+
+
+---
+--- A table of users in IOT network
+---
+iotUserTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF iotUserTableEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "A table with few rows for users"
+    ::= { Tables 1 }
+
+iotUserTableEntry OBJECT-TYPE
+    SYNTAX      iotUserTableEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "A row of data in myTestTable"
+    INDEX       { ROStringCol1 }
+    ::= { iotUserTable 1 }
+
+iotUserTableEntry ::= SEQUENCE {
+    ROStringCol1 DisplayString,
+    ROIntCol2    Integer32
+}
+
+ROStringCol1 OBJECT-TYPE
+    SYNTAX      DisplayString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Just a test label for table"
+    ::= { iotUserTableEntry 1 }
+
+ROIntCol2 OBJECT-TYPE
+    SYNTAX      Integer32 (0..2147483647)
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Just a test integer for table"
+    ::= { iotUserTableEntry 2 }
+
+
+
+---
+--- Conformance related definitions
+---
+
+myScalarGroup OBJECT-GROUP
+    OBJECTS { ROString, ROInteger }
+    STATUS      current
+    DESCRIPTION
+        "Group of stats that we are implementing."
+    ::= { ConformenceGroups 1 }
+
+iotUserTableGroup OBJECT-GROUP
+    OBJECTS { ROStringCol1, ROIntCol2 }
+    STATUS      current
+    DESCRIPTION
+        "Group of table stats that we are implementing."
+    ::= { ConformenceGroups 2 }
+
+---
+--- vim modeline to tell it how to colorize
+--- vim: syntax=mib
+---
+END
