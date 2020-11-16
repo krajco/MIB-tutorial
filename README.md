@@ -27,13 +27,9 @@ mib2c -c subagent.m2c agentxIOT
 ```
 extern char ROStringVar[80];
 extern char RWStringVar[80];
-extern int ROIntegerVar;
-extern int RWIntegerVar;
 ```
 ##### Create access to global variables
 ```
 char ROStringVar[80] = "";
-char RWStringVar[80] = "";
 int ROIntegerVar = 0;
-int RWIntegerVar = 0;
 ```
