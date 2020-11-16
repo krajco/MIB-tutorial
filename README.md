@@ -26,10 +26,10 @@ mib2c -c subagent.m2c agentxIOT
 ##### Create global variables in afentxIOT.c
 ```
 extern char ROStringVar[80];
-extern char RWStringVar[80];
+extern int  ROIntegerVar;
 ```
 ##### Create access to global variables
 ```
 char ROStringVar[80] = "";
-int ROIntegerVar = 0;
+int  ROIntegerVar = 0;
 ```
