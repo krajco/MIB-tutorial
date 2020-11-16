@@ -21,6 +21,7 @@ snmptranslate -Tp -IR agentxIOT
 mib2c -c mib2c.scalar.conf agentxIOT
 mib2c -c mfd-makefile.m2m agentxIOT
 mib2c -c subagent.m2c agentxIOT
+mib2c -c mib2c.mfd.conf iotUserTable
 ```
 #### Init scalars objects agent code
 ##### Create global variables in afentxIOT.c
