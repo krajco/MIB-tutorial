@@ -3,7 +3,7 @@
 
 ### Copy MIB to snmp mibs dir
 ```
-cp IOT-MIB /usr/share/local/snmp/mibs
+sudo cp IOT-MIB.txt /usr/local/share/snmp/mibs/
 ```
 
 ### Export MIB
