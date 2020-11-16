@@ -1,5 +1,11 @@
 # MIB-tutorial
 
+
+### Copy MIB to snmp mibs dir
+```
+cp IOT-MIB /usr/share/local/snmp/mibs
+```
+
 ### Export MIB
 ```
 export MIBS=+IOT-MIB
