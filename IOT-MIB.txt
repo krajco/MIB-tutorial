@@ -1,0 +1,132 @@
+IOT-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    OBJECT-GROUP
+        FROM SNMPv2-CONF
+    DisplayString
+        FROM SNMPv2-TC
+    experimental, OBJECT-TYPE, Integer32, MODULE-IDENTITY
+        FROM SNMPv2-SMI
+;
+
+--
+-- top level structure
+--
+agentxIOT MODULE-IDENTITY
+    LAST-UPDATED "202001050000Z"
+    ORGANIZATION "theunixtips"
+    CONTACT-INFO "xkrajc17@stud.fit.vutbr.cz"
+    DESCRIPTION  "MIB for IoT devices included to home assistant"
+    REVISION     "202001050000Z"
+    DESCRIPTION  "Initializing"
+    ::= { experimental 9999 }
+
+Scalars           OBJECT IDENTIFIER ::= { agentxIOT  1 }
+Tables            OBJECT IDENTIFIER ::= { agentxIOT  2 }
+ConformenceGroups OBJECT IDENTIFIER ::= { agentxIOT 99 }
+
+---
+--- Some Scalars
+---
+ROString OBJECT-TYPE
+    SYNTAX      DisplayString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "String object type only for read"
+    ::= { Scalars 1 }
+
+ROInteger OBJECT-TYPE
+    SYNTAX      Integer32 (0..2147483647)
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "Integer object type only for read"
+    ::= { Scalars 2 }
+
+
+
+
+
+---
+--- A table of users in IOT network
+---
+iotUserTable OBJECT-TYPE
+    SYNTAX      SEQUENCE OF iotUserTableEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "A table with few rows for users"
+    ::= { Tables 1 }
+
+iotUserTableEntry OBJECT-TYPE
+    SYNTAX      iotUserTableEntry
+    MAX-ACCESS  not-accessible
+    STATUS      current
+    DESCRIPTION "A row of data in myTestTable"
+    INDEX       { entityID }
+    ::= { iotUserTable 1 }
+
+iotUserTableEntry ::= SEQUENCE {
+    entityID     DisplayString,
+    editable     Integer32,
+    id           DisplayString,
+    userID       DisplayString,
+    friendlyName DisplayString
+}
+
+entityID OBJECT-TYPE
+    SYNTAX      DisplayString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "entity ID"
+    ::= { iotUserTableEntry 1 }
+
+editable OBJECT-TYPE
+    SYNTAX      Integer32
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "editable"
+    ::= { iotUserTableEntry 2 }
+
+id OBJECT-TYPE
+    SYNTAX      DisplayString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "ID"
+    ::= { iotUserTableEntry 3 }
+
+userID OBJECT-TYPE
+    SYNTAX      DisplayString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "user ID"
+    ::= { iotUserTableEntry 4 }
+
+friendlyName OBJECT-TYPE
+    SYNTAX      DisplayString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "friendly name"
+    ::= { iotUserTableEntry 5 }
+
+---
+--- Conformance related definitions
+---
+
+myScalarGroup OBJECT-GROUP
+    OBJECTS { ROString, ROInteger }
+    STATUS      current
+    DESCRIPTION
+        "Group of stats that we are implementing."
+    ::= { ConformenceGroups 1 }
+
+iotUserTableGroup OBJECT-GROUP
+    OBJECTS { entityID, editable, id, userID, friendlyName }
+    STATUS      current
+    DESCRIPTION
+        "Group of table stats that we are implementing."
+    ::= { ConformenceGroups 2 }
+
+---
+--- vim modeline to tell it how to colorize
+--- vim: syntax=mib
+---
+END

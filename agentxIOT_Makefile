@@ -1,0 +1,45 @@
+
+CC=gcc
+TABLE_PREFIX=agentxIOT
+
+NETSNMPCONFIG=net-snmp-config
+
+
+# uncomment this if you have GNU make
+#NETSNMPCFLAGS := $(shell $(NETSNMPCONFIG) --base-cflags)
+#NETSNMPLIBS := $(shell $(NETSNMPCONFIG) --agent-libs)
+NETSNMPCFLAGS=`$(NETSNMPCONFIG) --base-cflags`
+NETSNMPLIBS=`$(NETSNMPCONFIG) --agent-libs`
+
+LIBS=$(NETSNMPLIBS)
+
+STRICT_FLAGS = -Wall -Wstrict-prototypes
+CFLAGS=-I. $(NETSNMPCFLAGS) $(STRICT_FLAGS)
+
+USER_OBJS =  \
+	iotUserTable_data_get.o \
+	iotUserTable_data_set.o \
+	iotUserTable_data_access.o
+
+OBJS =  $(USER_OBJS) \
+	$(TABLE_PREFIX).o \
+	$(TABLE_PREFIX)_subagent.o \
+	iotUserTable.o \
+  iotUserTable_interface.o
+
+TARGETS=$(TABLE_PREFIX)
+
+.SUFFIXES:
+.SUFFIXES: .c .o .deps
+
+all: $(TARGETS)
+
+user: $(USER_OBJS)
+
+$(TARGETS): $(LIB_DEPS)
+
+$(TABLE_PREFIX): $(OBJS) $(TABLE_PREFIX)_Makefile
+	$(CC) -o $(TABLE_PREFIX) $(OBJS) $(LIBS)
+
+clean:
+	rm -f $(OBJS) $(TARGETS)
