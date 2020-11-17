@@ -53,8 +53,11 @@ iotUserTable_init_data(iotUserTable_registration * iotUserTable_reg)
     DEBUGMSGTL(("verbose:iotUserTable:iotUserTable_init_data","called\n"));
 
     static unsigned int my_columns[] = {
-            COLUMN_ROSTRINGCOL1,
-            COLUMN_ROINTCOL2
+            COLUMN_ENTITYID,
+            COLUMN_EDITABLE,
+            COLUMN_ID,
+            COLUMN_USERID,
+            COLUMN_FRIENDLYNAME
     };
     static netsnmp_column_info valid_columns;
     valid_columns.isRange = 0;
@@ -196,9 +199,19 @@ iotUserTable_container_load(netsnmp_container *container)
     iotUserTable_rowreq_ctx *rowreq_ctx;
     size_t                 count = 0;
 
-   char   ROStringCol1[116];
-   size_t ROStringCol1_len;
-   int    ROIntCol2;
+   char   entityID[116];
+   size_t entityID_len;
+
+   char   id[116];
+   size_t id_len;
+
+   int    editable;
+
+   char   userID[116];
+   size_t userID_len;
+
+   char   friendlyName[116];
+   size_t friendlyName_len;
 
     /*
      * this example code is based on a data source that is a
@@ -253,62 +266,53 @@ iotUserTable_container_load(netsnmp_container *container)
     if(NULL == filep)
         break;
 
-    sscanf(line, "%s%d", ROStringCol1, &ROIntCol2);
-    ROStringCol1_len = strlen(ROStringCol1);
-    /*
-     * parse line into variables
-     */
-    /*
+    sscanf(line, "%s%d%s%s%s", entityID, &editable, id, userID, friendlyName);
+
+    entityID_len     = strlen(entityID);
+    userID_len       = strlen(userID);
+    id_len           = strlen(id);
+    friendlyName_len = strlen(friendlyName);
+
+      /*
+       * TODO:352:M: |   |-> set indexes in new iotUserTable rowreq context.
+       * data context will be set from the param (unless NULL,
+       *      in which case a new data context will be allocated)
+       */
 
 
 
-    ***---------------------------------------------***
-    ***              END  EXAMPLE CODE              ***
-    ***************************************************/
+    rowreq_ctx = iotUserTable_allocate_rowreq_ctx(NULL);
+    if (NULL == rowreq_ctx) {
+        snmp_log(LOG_ERR, "memory allocation failed\n");
+        return MFD_RESOURCE_UNAVAILABLE;
+    }
 
-        /*
-         * TODO:352:M: |   |-> set indexes in new iotUserTable rowreq context.
-         * data context will be set from the param (unless NULL,
-         *      in which case a new data context will be allocated)
-         */
+    if(MFD_SUCCESS != iotUserTable_indexes_set(rowreq_ctx
+                           , entityID, entityID_len
+           )) {
+        snmp_log(LOG_ERR,"error setting index while loading "
+                 "iotUserTable data.\n");
+        iotUserTable_release_rowreq_ctx(rowreq_ctx);
+        continue;
+    }
 
+    memcpy(rowreq_ctx->data.id, id,id_len);
+    rowreq_ctx->data.id_len = id_len;
 
+    memcpy(rowreq_ctx->data.userID, userID,userID_len);
+    rowreq_ctx->data.userID_len = userID_len;
 
-        rowreq_ctx = iotUserTable_allocate_rowreq_ctx(NULL);
-        if (NULL == rowreq_ctx) {
-            snmp_log(LOG_ERR, "memory allocation failed\n");
-            return MFD_RESOURCE_UNAVAILABLE;
-        }
-        if(MFD_SUCCESS != iotUserTable_indexes_set(rowreq_ctx
-                               , ROStringCol1, ROStringCol1_len
-               )) {
-            snmp_log(LOG_ERR,"error setting index while loading "
-                     "iotUserTable data.\n");
-            iotUserTable_release_rowreq_ctx(rowreq_ctx);
-            continue;
-        }
-
-        /*
-         * TODO:352:r: |   |-> populate iotUserTable data context.
-         * Populate data context here. (optionally, delay until row prep)
-         */
-    /*
-     * TRANSIENT or semi-TRANSIENT data:
-     * copy data or save any info needed to do it in row_prep.
-     */
-    /*
-     * setup/save data for ROIntCol2
-     * ROIntCol2(2)/INTEGER32/ASN_INTEGER/long(long)//l/A/w/e/R/d/h
-     */
-    /** no mapping */
-    rowreq_ctx->data.ROIntCol2 = ROIntCol2;
+    memcpy(rowreq_ctx->data.friendlyName, friendlyName,friendlyName_len);
+    rowreq_ctx->data.friendlyName_len = friendlyName_len;
 
 
-        /*
-         * insert into table container
-         */
-        CONTAINER_INSERT(container, rowreq_ctx);
-        ++count;
+    // printf("%s\n",rowreq_ctx->data.userID);
+    rowreq_ctx->data.editable = editable;
+      /*
+       * insert into table container
+       */
+      CONTAINER_INSERT(container, rowreq_ctx);
+      ++count;
     }
 
     /*
