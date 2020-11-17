@@ -61,29 +61,51 @@ iotUserTableEntry OBJECT-TYPE
     MAX-ACCESS  not-accessible
     STATUS      current
     DESCRIPTION "A row of data in myTestTable"
-    INDEX       { ROStringCol1 }
+    INDEX       { entityID }
     ::= { iotUserTable 1 }
 
 iotUserTableEntry ::= SEQUENCE {
-    ROStringCol1 DisplayString,
-    ROIntCol2    Integer32
+    entityID     DisplayString,
+    editable     Integer32,
+    id           DisplayString,
+    userID       DisplayString,
+    friendlyName DisplayString
 }
 
-ROStringCol1 OBJECT-TYPE
+entityID OBJECT-TYPE
     SYNTAX      DisplayString
     MAX-ACCESS  read-only
     STATUS      current
-    DESCRIPTION "Just a test label for table"
+    DESCRIPTION "entity ID"
     ::= { iotUserTableEntry 1 }
 
-ROIntCol2 OBJECT-TYPE
-    SYNTAX      Integer32 (0..2147483647)
+editable OBJECT-TYPE
+    SYNTAX      Integer32
     MAX-ACCESS  read-only
     STATUS      current
-    DESCRIPTION "Just a test integer for table"
+    DESCRIPTION "editable"
     ::= { iotUserTableEntry 2 }
 
+id OBJECT-TYPE
+    SYNTAX      DisplayString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "ID"
+    ::= { iotUserTableEntry 3 }
 
+userID OBJECT-TYPE
+    SYNTAX      DisplayString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "user ID"
+    ::= { iotUserTableEntry 4 }
+
+friendlyName OBJECT-TYPE
+    SYNTAX      DisplayString
+    MAX-ACCESS  read-only
+    STATUS      current
+    DESCRIPTION "friendly name"
+    ::= { iotUserTableEntry 5 }
 
 ---
 --- Conformance related definitions
@@ -97,7 +119,7 @@ myScalarGroup OBJECT-GROUP
     ::= { ConformenceGroups 1 }
 
 iotUserTableGroup OBJECT-GROUP
-    OBJECTS { ROStringCol1, ROIntCol2 }
+    OBJECTS { entityID, editable, id, userID, friendlyName }
     STATUS      current
     DESCRIPTION
         "Group of table stats that we are implementing."
